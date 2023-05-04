@@ -1,0 +1,9 @@
+<launch>
+    <rosparam command="load" file="$(find place_recog_eval)/launch/config.yaml" />
+
+    <arg name="use_rosbag" default="true"/>
+	<param name="use_rosbag" value="$(arg use_rosbag)" type="bool"/>
+
+    <node pkg="place_recog_eval" type="msg_converter" name="msg_converter" output="screen"/>
+    <node pkg="place_recog_eval" type="merge_messages" name="merge_messages" output="screen"/>
+</launch>

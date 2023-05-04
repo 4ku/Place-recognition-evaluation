@@ -1,0 +1,10 @@
+*.pyc
+*.png
+*.ply
+*.pcd
+*.egg-info
+*.bag
+.vscode
+build/
+LoGG3D_Net/
+!assets/*.png

@@ -1,0 +1,8 @@
+<launch>
+    <include file="$(find place_recog_eval)/launch/base.launch" />
+
+	<param name="method" value="logg3d"/>
+	<param name="threshold" value="0.09" type="double"/>
+
+	<node pkg="place_recog_eval" type="evaluate.py" name="evaluate_node" output="screen" cwd="node"/>
+</launch>

@@ -1,0 +1,8 @@
+<launch>
+	<include file="$(find place_recog_eval)/launch/base.launch" />
+
+	<param name="method" value="dbow"/>
+	<param name="threshold" value="2.2" type="double"/>
+
+	<node pkg="place_recog_eval" type="evaluate" name="evaluate" output="screen" cwd="node"/>
+</launch>

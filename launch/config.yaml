@@ -1,0 +1,47 @@
+# Input rosbag file for merging
+merge_rosbag_input_path: /home/username/eight_double_loop.bag
+
+# Output rosbag file for merged point clouds
+merge_rosbag_output_path: /home/username/eight_merged.bag
+
+# Raw topics for merging
+lidar_raw_topic: "/livox/lidar_pc" # Raw point cloud topic
+odom_raw_topic: "/Odometry" # Raw odometry topic
+img_raw_topic: "/camera/color/image_raw_sync" # Raw image topic
+
+# Topic names for merged data
+merged_lidar_topic: "/cloud_merged" # Merged point cloud topic
+merged_odom_topic: "/odom_merged" # Merged odometry topic
+merged_camera_topic: "/img_merged" # Merged image topic
+
+# Point cloud accumulation method:
+# 0: Queue-like method. Adds one new cloud, removes one old cloud, and publishes.
+# 1: Batch-like method. Accumulates N clouds, publishes, and then removes N clouds.
+keyframe_type: 1
+
+# Voxel grid filter leaf size for merging point clouds
+merge_leaf_size: 0.05
+
+# Number of clouds to accumulate before publishing
+cloud_size: 10
+
+# Number of triplets (point cloud, odometry and image) for office_double_loop.bag
+# record_size: 950
+
+# Number of triplets for eight_double_loop.bag
+record_size: 1000
+
+# Minimum index difference between loop closure candidates
+min_idx_diff: 1
+
+# Flag to consider the angle between loop closure candidates
+angle_consideration: true
+
+# Maximum angle difference (in degrees) between loop closure candidates
+max_angle_deg: 45
+
+# Maximum distance between loop closure candidates
+max_dist: 3
+
+# Flag to save candidates (predicted and real) to a file in the results folder
+save_candidates: true

@@ -1,0 +1,11 @@
+<launch>
+  <arg name="use_rosbag" default="true"/>
+
+  <param name="use_rosbag" value="$(arg use_rosbag)" type="bool"/>
+  <rosparam command="load" file="$(find place_recog_eval)/launch/config.yaml" />
+  
+  <include file="$(find place_recog_eval)/launch/merge.launch" if="$(eval not use_rosbag)">
+    <arg name="use_rosbag" value="$(arg use_rosbag)"/>
+  </include>
+
+</launch>
