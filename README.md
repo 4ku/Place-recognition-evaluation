@@ -1,3 +1,30 @@
+# Table of Contents
+1. [Introduction](#introduction)
+2. [Getting Started](#getting-started)
+   - [Dependencies](#dependencies)
+   - [Installation](#installation)
+   - [LoGG3D-Net Setup](#logg3d-net-setup)
+   - [SuperPoint + SuperGlue Setup](#superpoint--superglue-setup)
+3. [Rosbag Files](#rosbag-files)
+   - [Office Data](#office-data)
+   - [Garage Data](#garage-data)
+4. [Usage](#usage)
+   - [Option 1: Launch Rosbag file from launch file](#option-1-launch-rosbag-file-from-launch-file)
+   - [Option 2: Launch Rosbag file from terminal](#option-2-launch-rosbag-file-from-terminal)
+   - [Launch Evaluation](#launch-evaluation)
+   - [Launch Custom Evaluation](#launch-custom-evaluation)
+   - [Evaluate combination of methods](#evaluate-combination-of-methods)
+5. [Evaluation Metrics](#evaluation-metrics)
+6. [Configuration](#configuration)
+   - [Create own vocabulary for DBoW2](#create-own-vocabulary-for-dbow2)
+7. [Results](#results)
+   - [Distance-based evaluation](#distance-based-evaluation)
+   - [Distance and angle-based evaluation](#distance-and-angle-based-evaluation)
+   - [Combined models evaluation (distance-based)](#combined-models-evaluation-distance-based)
+   - [Combined models evaluation (distance and angle-based)](#combined-models-evaluation-distance-and-angle-based)
+   - [Execution time performance](#execution-time-performance)
+
+
 # Introduction 
 This repository was made to perform comparison and evaluation between different approaches for place recognition. The goal is to provide a comprehensive benchmarking environment for researchers and practitioners to analyze the performance of various place recognition methods. The repository contains the following methods:
 
@@ -82,7 +109,7 @@ pip install --upgrade git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
 * Download LoGG3D-Net pre-trained models 
 
 ```
-cd scripts/methods/logg3d/
+cd scripts/methods/LoGG3D_Net/
 wget -O checkpoints.zip https://cloudstor.aarnet.edu.au/plus/s/G9z6VzR72TRm09S/download
 unzip checkpoints.zip
 ```
@@ -97,6 +124,7 @@ pip3 install numpy opencv-python torch matplotlib
 
 2. Download the pretrained models from the SuperGlue repository:
 ```
+cd scripts/methods/superglue/weights/
 wget https://github.com/magicleap/SuperGluePretrainedNetwork/raw/master/models/weights/superglue_indoor.pth
 wget https://github.com/magicleap/SuperGluePretrainedNetwork/raw/master/models/weights/superpoint_v1.pth
 ```
