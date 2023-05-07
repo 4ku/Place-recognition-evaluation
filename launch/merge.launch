@@ -1,5 +1,5 @@
 <launch>
-    <rosparam command="load" file="$(find place_recog_eval)/launch/config.yaml" />
+    <rosparam command="load" file="$(find place_recog_eval)/config/config.yaml" />
 
     <arg name="use_rosbag" default="true"/>
 	<param name="use_rosbag" value="$(arg use_rosbag)" type="bool"/>
