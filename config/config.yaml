@@ -1,8 +1,8 @@
 # Input rosbag file for merging
-merge_rosbag_input_path: /home/username/eight_double_loop.bag
+merge_rosbag_input_path: /home/ivan/Desktop/diploma/bags/university/garage/eight_double_loop.bag
 
 # Output rosbag file for merged point clouds
-merge_rosbag_output_path: /home/username/eight_merged.bag
+merge_rosbag_output_path: /home/ivan/Desktop/diploma/eval_ws/src/Place-recognition-evaluation/eight_merged.bag
 
 # Raw topics for merging
 lidar_raw_topic: "/livox/lidar_pc" # Raw point cloud topic
@@ -23,7 +23,7 @@ keyframe_type: 1
 merge_leaf_size: 0.05
 
 # Number of clouds to accumulate before publishing
-cloud_size: 10
+cloud_size: 7
 
 # Number of triplets (point cloud, odometry and image) for office_double_loop.bag
 # record_size: 950

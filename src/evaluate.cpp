@@ -1,5 +1,6 @@
 #include "methods/scan_context.h"
 #include "methods/dbow.h"
+#include "methods/STD.h"
 #include "evaluator.h"
 
 #include <message_filters/subscriber.h>
@@ -24,6 +25,11 @@ void getMethods(std::vector<BaseMethod *> &methods, ros::NodeHandle &nh)
         {
             nh.getParam("leaf_size", leaf_size);
             methods.push_back(new ScanContext(threshold, leaf_size));
+        }
+        else if (method_name == "std"){
+            ConfigSetting config_setting;
+            read_parameters(nh, config_setting);
+            methods.push_back(new STD(config_setting));
         }
         else
         {

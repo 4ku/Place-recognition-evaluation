@@ -10,7 +10,7 @@ voxel_init_num: 10
 proj_image_resolution: 0.25
 proj_dis_min: 0
 proj_dis_max: 5
-corner_thre: 10
+corner_thre: 7
 
 # std descriptor
 descriptor_near_num: 15
@@ -20,11 +20,10 @@ non_max_suppression_radius: 2
 std_side_resolution: 0.2
 
 # candidate search
-skip_near_num: 50
-candidate_num: 50
-sub_frame_num: 10
+skip_near_num: 0
+candidate_num: 1
 vertex_diff_threshold: 0.8
 rough_dis_threshold: 0.015
 normal_threshold: 0.2
 dis_threshold: 0.5
-icp_threshold: 0.2
+icp_threshold: 0.0

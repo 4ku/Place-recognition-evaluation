@@ -1,9 +1,8 @@
 <launch>
   	<include file="$(find place_recog_eval)/launch/base.launch" />
+	<rosparam command="load" file="$(find place_recog_eval)/config/std_livox.yaml" />
 
-	<param name="method" value="context" type="string"/>
-	<param name="leaf_size" value="0.2" type="double"/>
-	<param name="threshold" value="0.035" type="double"/>
+	<param name="method" value="std" type="string"/>
 
 	<node pkg="place_recog_eval" type="evaluate" name="evaluate" output="screen" cwd="node"/>
 </launch>

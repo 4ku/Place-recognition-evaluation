@@ -59,6 +59,8 @@ set(EVALUATE_SRC
   src/methods/dbow.cpp
   src/methods/scan_context.cpp
   src/methods/scan_context/Scancontext.cpp
+  src/methods/STD.cpp
+  src/methods/STD/STDesc.cpp
 )
 
 
@@ -69,6 +71,7 @@ ${Boost_LIBRARIES}
 ${PCL_LIBRARIES}
 ${OpenCV_LIBRARIES}
 ${EIGEN3_LIBRARIES}
+${CERES_LIBRARIES}
 DBoW2
 )
 
@@ -94,9 +97,9 @@ ${OpenCV_LIBRARIES}
   DBoW2
 )
 
-add_executable(place_recognition_livox src/methods/place_recognition_livox.cpp src/methods/STD/STDesc.cpp )
-target_link_libraries(place_recognition_livox 
-        ${catkin_LIBRARIES} 
-        ${PCL_LIBRARIES} 
-        ${OpenCV_LIBS} 
-        ${CERES_LIBRARIES})
+# add_executable(place_recognition_livox src/methods/place_recognition_livox.cpp src/methods/STD/STDesc.cpp )
+# target_link_libraries(place_recognition_livox 
+#         ${catkin_LIBRARIES} 
+#         ${PCL_LIBRARIES} 
+#         ${OpenCV_LIBS} 
+#         ${CERES_LIBRARIES})

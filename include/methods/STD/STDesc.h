@@ -310,6 +310,16 @@ public:
       const pcl::PointCloud<pcl::PointXYZINormal>::Ptr &target_cloud,
       std::pair<Eigen::Vector3d, Eigen::Matrix3d> &transform);
 
+  // Select a specified number of candidate frames according to the number of
+  // STDesc rough matches
+  void candidate_selector(const std::vector<STDesc> &stds_vec,
+                          std::vector<STDMatchList> &candidate_matcher_vec);
+
+  // Get the best candidate frame by geometry check
+  void
+  candidate_verify(const STDMatchList &candidate_matcher, double &verify_score,
+                   std::pair<Eigen::Vector3d, Eigen::Matrix3d> &relative_pose,
+                   std::vector<std::pair<STDesc, STDesc>> &sucess_match_vec);                    
 private:
   /*Following are sub-processing functions*/
 
@@ -345,16 +355,6 @@ private:
   build_stdesc(const pcl::PointCloud<pcl::PointXYZINormal>::Ptr &corner_points,
                std::vector<STDesc> &stds_vec);
 
-  // Select a specified number of candidate frames according to the number of
-  // STDesc rough matches
-  void candidate_selector(const std::vector<STDesc> &stds_vec,
-                          std::vector<STDMatchList> &candidate_matcher_vec);
-
-  // Get the best candidate frame by geometry check
-  void
-  candidate_verify(const STDMatchList &candidate_matcher, double &verify_score,
-                   std::pair<Eigen::Vector3d, Eigen::Matrix3d> &relative_pose,
-                   std::vector<std::pair<STDesc, STDesc>> &sucess_match_vec);
 
   // Get the transform between a matched std pair
   void triangle_solver(std::pair<STDesc, STDesc> &std_pair, Eigen::Vector3d &t,
