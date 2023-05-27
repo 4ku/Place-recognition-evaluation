@@ -82,7 +82,7 @@ pip install -e .
 
 At first clone LoGG3D-Net repository to **`scripts/methods/` directory!**:
 ```
-cd ~/catkin_ws/src/place_recog_eval/scripts/methods/
+cd ~/catkin_ws/src/Place-recognition-evaluation/scripts/methods/
 git clone https://github.com/csiro-robotics/LoGG3D-Net.git LoGG3D_Net
 ```
 
@@ -128,6 +128,25 @@ cd scripts/methods/superglue/weights/
 wget https://github.com/magicleap/SuperGluePretrainedNetwork/raw/master/models/weights/superglue_indoor.pth
 wget https://github.com/magicleap/SuperGluePretrainedNetwork/raw/master/models/weights/superpoint_v1.pth
 ```
+
+### MixVPR Setup
+
+At first clone MixVPR repository to **`scripts/methods/` directory!**:
+```
+cd ~/catkin_ws/src/Place-recognition-evaluation/scripts/methods/
+git clone https://github.com/amaralibey/MixVPR.git
+```
+
+You can create separate environment to install necessary dependencies for MixVPR. 
+
+* Install requirements:
+
+```
+pip install -r requirements.txt
+```
+
+Download MixVPR pre-trained models [here](https://drive.google.com/file/d/1vuz3PvnR7vxnDDLQrdHJaOA04SQrtk5L/view?usp=share_link) and put it to `scripts/methods/MixVPR/` directory.
+
 
 # Rosbag Files
 

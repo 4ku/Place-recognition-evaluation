@@ -6,7 +6,7 @@ from nav_msgs.msg import Odometry
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from scripts.methods import BaseMethod
+from scripts.methods.base import BaseMethod
 from typing import Optional, Tuple, List
 import time
 import os

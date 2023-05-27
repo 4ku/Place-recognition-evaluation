@@ -7,4 +7,5 @@
 .vscode
 build/
 LoGG3D_Net/
+MixVPR/
 !assets/*.png

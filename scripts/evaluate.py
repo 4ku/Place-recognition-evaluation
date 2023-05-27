@@ -6,11 +6,9 @@ from sensor_msgs.msg import PointCloud2, Image
 from nav_msgs.msg import Odometry
 from message_filters import TimeSynchronizer, Subscriber
 
-from scripts.methods import LoGG3D, SuperGlue
 from scripts.evaluator import Evaluator
 from typing import List
 from scripts.methods.base import BaseMethod
-
 
 def getMethods() -> List[BaseMethod]:
     """
@@ -26,9 +24,14 @@ def getMethods() -> List[BaseMethod]:
         threshold = float(rospy.get_param('threshold'))
 
         if method_name == "logg3d":
+            from scripts.methods.LoGG3D import LoGG3D
             methods.append(LoGG3D(threshold))
         elif method_name == "superglue":
+            from scripts.methods.SuperGlue import SuperGlue
             methods.append(SuperGlue(threshold))
+        elif method_name == "mix_vpr":
+            from scripts.methods.MixVPR_ import MixVPR
+            methods.append(MixVPR(threshold))
         else:
             rospy.logerr(
                 "Invalid method parameter. Use 'logg3d' or 'superglue'.")
