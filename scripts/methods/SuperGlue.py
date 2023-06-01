@@ -1,4 +1,4 @@
-from scripts.methods import BaseMethod
+from scripts.methods.base import BaseMethod
 from scripts.methods.superglue.matching import Matching
 from .superglue.utils import frame2tensor
 

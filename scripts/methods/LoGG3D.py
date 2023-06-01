@@ -1,4 +1,4 @@
-from scripts.methods import BaseMethod
+from scripts.methods.base import BaseMethod
 from sensor_msgs import point_cloud2
 
 import numpy as np
