@@ -74,9 +74,11 @@ void Evaluator::synced_callback(const sensor_msgs::PointCloud2::ConstPtr &cloud_
     counter++;
 
     if (counter == RECORD_SIZE)
-    {
+    {   
+        ROS_INFO("Starting evaluation...");
+        
         get_real_loop_candidates();
-        get_model_loop_candidates();
+        evaluate_models();
 
         plot_odometry_path(odom_vec);
         ros::shutdown();
@@ -156,7 +158,7 @@ void Evaluator::get_real_loop_candidates()
     save_candidates(real_loop_candidates, "real_" + method_name + ".txt");
 }
 
-void Evaluator::get_model_loop_candidates()
+void Evaluator::evaluate_models()
 {   
     double best_f1_score = 0;
     BaseMethod *best_method = nullptr;

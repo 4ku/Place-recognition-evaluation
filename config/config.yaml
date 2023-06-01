@@ -23,7 +23,7 @@ keyframe_type: 1
 merge_leaf_size: 0.05
 
 # Number of clouds to accumulate before publishing
-cloud_size: 7
+cloud_size: 10
 
 # Number of triplets (point cloud, odometry and image) for office_double_loop.bag
 # record_size: 950

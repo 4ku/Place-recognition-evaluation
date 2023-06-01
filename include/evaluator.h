@@ -28,7 +28,7 @@ public:
     void get_real_loop_candidates();
 
     // Get predicted loop closure candidates from the place recognition model
-    void get_model_loop_candidates();
+    void evaluate_models();
 
     // Calculate evaluation metrics: precision, recall, and F1 score
     void calculate_metrics(std::vector<std::vector<bool>> &predicted_loop_candidates, double &precision, double &recall, double &f1_score, double &accuracy);

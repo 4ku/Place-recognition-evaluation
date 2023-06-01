@@ -26,4 +26,4 @@ vertex_diff_threshold: 0.8
 rough_dis_threshold: 0.015
 normal_threshold: 0.2
 dis_threshold: 0.5
-icp_threshold: 0.0
+icp_threshold: 0.4

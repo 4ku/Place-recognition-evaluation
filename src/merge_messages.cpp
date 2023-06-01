@@ -80,6 +80,7 @@ MergeRepublisher::MergeRepublisher(bool use_rosbag, std::string input_bag_path, 
     downsampler.setLeafSize(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE);
 }
 
+static int msg_count = 0;
 void MergeRepublisher::callback(const sensor_msgs::PointCloud2::ConstPtr &cloud_msg,
                                 const nav_msgs::Odometry::ConstPtr &odom_msg,
                                 const boost::optional<sensor_msgs::Image::ConstPtr> &img_msg)
@@ -129,6 +130,10 @@ void MergeRepublisher::callback(const sensor_msgs::PointCloud2::ConstPtr &cloud_
             if (!img_vec.empty())
                 merged_img_publisher.publish(img_msg);
         }
+
+        // Number of messages published or written to bag
+        if (++msg_count % 50 == 0)
+            ROS_INFO("Published/written %d messages", msg_count);
 
         // Update buffers
         size_t erase_count = (KEYFRAME_TYPE == 0) ? 1 : CLOUD_SIZE;
@@ -239,7 +244,8 @@ void MergeRepublisher::processBag(std::string lidar_topic, std::string odom_topi
     }
 
     ROS_INFO("Processed %d messages", count);
-
+    ROS_INFO("Number of messages written to output bag: %d", msg_count);
+    
     input_bag.close();
     output_bag.close();
 }
