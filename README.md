@@ -32,6 +32,8 @@ This repository was made to perform comparison and evaluation between different 
 2. [LoGG3D-Net](https://github.com/csiro-robotics/LoGG3D-Net)
 3. [Scan Context](https://github.com/irapkaist/scancontext)
 4. [DBoW2](https://github.com/dorian3d/DBoW2)
+5. [MixVPR](https://github.com/amaralibey/MixVPR)
+6. [STD](https://github.com/hku-mars/STD)
 
 # Getting Started
 ## Dependencies
@@ -42,6 +44,7 @@ This repository was made to perform comparison and evaluation between different 
 *    OpenCV
 *    Eigen3
 *    DBoW2
+*    Ceres
 *    [Livox ROS driver](https://github.com/Livox-SDK/livox_ros_driver)
 
 
@@ -220,8 +223,6 @@ roslaunch place_recog_eval dbow.launch
 roslaunch place_recog_eval context.launch
 ```
 
-The evaluation results will be printed on the terminal and saved as images.
-
 * For LoGG3D-Net:
 
 ```
@@ -234,7 +235,21 @@ roslaunch place_recog_eval logg3d.launch
 roslaunch place_recog_eval superglue.launch
 ```
 
-You have the option to modify the threshold or other parameters in the respective launch files. By default, the best parameters for each method have been fine-tuned on `loop1.bag`. To further customize the settings, you can edit the `config.yaml` file. A detailed description of each parameter can be found within the file or in [configuration section](#configuration).
+* For MixVPR:
+
+```
+roslaunch place_recog_eval mix_vpr.launch
+```
+
+* For STD:
+   
+```
+roslaunch place_recog_eval std.launch
+```
+
+The evaluation results will be printed on the terminal and trajectory path will be saved as an image.
+
+You have the option to modify the threshold or other parameters in the respective launch files. By default, the best parameters for each method have been fine-tuned on `office_double_loop.bag`. To further customize the settings, you can edit the `config.yaml` file.
 
 
 ## Launch Custom Evaluation
@@ -262,6 +277,8 @@ or (for Python):
 roslaunch place_recog_eval evaluate_py.launch
 ```
 
+In the `results` folder precision-recall curve will be saved as an image. 
+
 ## Evaluate combination of methods
 
 1. Set `save_candidates` to `true` in `config.yaml` file. This will save predicted and real candidates for each method in the `results` folder.
@@ -275,43 +292,10 @@ python get_results.py
 ```
 It's used element-wise multiplication of predicted candidates for each method to get final candidates matrix. Then precision, recall, f1 score and accuracy are calculated for final candidates matrix. 
 
-**Note**: after evaluation for each method separately, ground truth file will be created in `results` folder (this file looks like this: real_*.txt). You have to be make sure, that all real_*.txt files are the same. If they are different, corresponding error will be printed in the terminal.
+**Note**: after evaluation for each method separately, ground truth file will be created in `results` folder (this file looks like this: `real_*.txt`). You have to be make sure, that all `real_*.txt` files are the same. If they are different, corresponding error will be printed in the terminal.
 
-# Evaluation Metrics
 
-The evaluation metrics used in this framework are:
-
-* **Precision**: The ratio of true positive loop closures to the total number of predicted loop closures.  
-
-* **Recall**: The ratio of true positive loop closures to the total number of actual loop closures.
-
-* **F1 Score**: The harmonic mean of precision and recall, providing a balanced measure of the method's performance.
-
-* **Accuracy**: The ratio of correctly identified loop closures (true positives) and correctly identified non-loop closures (true negatives) to the total number of loop closure predictions. This metric measures the overall performance of the place recognition method.
-
-# Configuration  
-
-The `config.yaml` file allows you to configure and customize various parameters for merging and processing point cloud, odometry, and image data. Here are some key parameters you can modify:
-
-*    `merge_rosbag_input_path`: The input path for the rosbag file to be merged.
-*    `merge_rosbag_output_path`: The output path for the merged rosbag file.
-*    `lidar_raw_topic`, `odom_raw_topic`, `img_raw_topic`: Raw topic names for point cloud, odometry, and image data respectively.
-*    `merged_lidar_topic`, `merged_odom_topic`, `merged_camera_topic`: Topic names for the merged point cloud, odometry, and image data.
-*    `keyframe_type`: Point cloud accumulation method, either queue-like (0) or batch-like (1).
-*    `merge_leaf_size`: Voxel grid filter leaf size for merging point clouds.
-*    `cloud_size`: Number of clouds to accumulate before publishing.
-*    `record_size`: The number of triplets (point cloud, odometry, and image) to record for evaluation.
-*    `min_idx_diff`: The minimum index difference between loop closure candidates.
-*    `angle_consideration`: Whether to consider the angle between loop closure candidates.
-*    `max_angle_deg`: The maximum angle difference (in degrees) between loop closure candidates.
-*    `max_dist`: The maximum distance between loop closure candidates.
-*    `save_candidates`: Flag to save loop closure candidates (predicted and real) to a file in the results folder.
-
-By adjusting these parameters, you can customize the merging process, point cloud processing, and loop closure evaluation according to your specific needs and dataset.
-
-Additionally, you can add new place recognition methods by implementing the `BaseMethod` interface and including them in the `methods` directory.
-
-## Create own vocabulary for DBoW2
+# Create own vocabulary for DBoW2
 
 1. Run roscore:  
 
@@ -340,9 +324,11 @@ The resulting vocabulary will be saved in the `include/methods/dbow/` directory.
 | Method                | Precision | Recall | F1 Score |
 |-----------------------|-----------|--------|----------|
 | DBoW2                 | 0.946     | 0.137  | 0.240    |
-| SuperPoint + SuperGlue| 0.844     | 0.396  | 0.539    |
-| Scan Context          | 0.849     | 0.312  | 0.456    |
+| SuperPoint + SuperGlue| 0.970     | 0.320  | 0.481    |
+| Scan Context          | 0.951     | 0.178  | 0.300    |
 | LoGG3D-Net            | 0.792     | 0.122  | 0.211    |
+| MixVPR                | 0.786     | 0.008  | 0.016    |
+| STD                   | 0.750     | 0.002  | 0.004    |
 
 *Table 1: Models evaluation on test data (laboratory environment, eight.bag). True positive here is when two points are close to each other (within 3 meters).*
 
@@ -351,42 +337,55 @@ The resulting vocabulary will be saved in the `include/methods/dbow/` directory.
 | Method                | Precision | Recall | F1 Score |
 |-----------------------|-----------|--------|----------|
 | DBoW2                 | 0.941     | 0.324  | 0.482    |
-| SuperPoint + SuperGlue| 0.841     | 0.936  | 0.886    |
-| Scan Context          | 0.599     | 0.522  | 0.558    |
+| SuperPoint + SuperGlue| 0.970     | 0.758  | 0.851    |
+| Scan Context          | 0.711     | 0.316  | 0.437    |
 | LoGG3D-Net            | 0.782     | 0.285  | 0.418    |
+| MixVPR                | 0.786     | 0.019  | 0.036    |
+| STD                   | 0.750     | 0.005  | 0.010    |
 
 *Table 2: Models evaluation on test data (laboratory environment). True positive here is when two points are close to each other (within 3 meters) and oriented in the same direction (within 45 degrees).*  
 
-
 ## Combined models evaluation (distance-based)
 
-| Method                  | Prec.  | Recall | F1    |
-|-------------------------|--------|--------|-------|
-| DBoW2 + LoGG3D          | 0.977  | 0.060  | 0.113 |
-| DBoW2 + Scan C.         | 0.993  | 0.096  | 0.175 |
-| (S.P. + S.G.) + Scan C. | 0.967  | 0.211  | 0.346 |
-| (S.P. + S.G.) + LoGG3D  | 0.939  | 0.120  | 0.213 |
+| Method                  | Precision | Recall | F1 Score |
+|-------------------------|-----------|--------|----------|
+| DBoW2 + LoGG3D          | 0.977     | 0.060  | 0.113    |
+| DBoW2 + Scan Context    | 0.990     | 0.068  | 0.127    |
+| DBoW2 + STD             | 1.000     | 0.001  | 0.001    |
+| (S.P. + S.G.) + Scan C. | 1.000     | 0.124  | 0.220    |
+| (S.P. + S.G.) + LoGG3D  | 0.970     | 0.116  | 0.207    |
+| (S.P. + S.G.) + STD     | 1.000     | 0.002  | 0.004    |
+| MixVPR + Scan C.        | 1.000     | 0.006  | 0.013    |
+| MixVPR + LoGG3D         | 0.714     | 0.004  | 0.007    |
+| MixVPR + STD            | 0.000     | 0.000  | 0.000    |
 
-*Table 3: Combined models evaluation on test data. True positive here is when two points are close to each other (within 3 meters). Note: S.P. = SuperPoint, S.G. = SuperGlue.*  
+*Table 3: Combined models evaluation on test data (laboratory environment). True positive here is when two points are close to each other (within 3 meters). Note: S.P. = SuperPoint, S.G. = SuperGlue.*  
 
 ## Combined models evaluation (distance and angle-based)
 
-| Method                  | Prec.  | Recall | F1    |
-|-------------------------|--------|--------|-------|
-| DBoW2 + LoGG3D          | 0.977  | 0.142  | 0.248 |
-| DBoW2 + Scan C.         | 0.993  | 0.228  | 0.371 |
-| (S.P. + S.G.) + Scan C. | 0.967  | 0.500  | 0.659 |
-| (S.P. + S.G.) + LoGG3D  | 0.939  | 0.285  | 0.438 |
+| Method                  | Precision | Recall | F1 Score |
+|-------------------------|-----------|--------|----------|
+| DBoW2 + LoGG3D          | 0.977     | 0.142  | 0.248    |
+| DBoW2 + Scan Context    | 0.990     | 0.160  | 0.276    |
+| DBoW2 + STD             | 1.000     | 0.002  | 0.003    |
+| (S.P. + S.G.) + Scan C. | 1.000     | 0.294  | 0.454    |
+| (S.P. + S.G.) + LoGG3D  | 0.970     | 0.275  | 0.429    |
+| (S.P. + S.G.) + STD     | 1.000     | 0.005  | 0.010    |
+| MixVPR + Scan C.        | 1.000     | 0.015  | 0.030    |
+| MixVPR + LoGG3D         | 0.714     | 0.008  | 0.017    |
+| MixVPR + STD            | 0.000     | 0.000  | 0.000    |
 
-*Table 4: Combined models evaluation on test data. True positive here is when two points are close to each other (within 3 meters) and oriented in the same direction (within 45 degrees). Note: S.P. = SuperPoint, S.G. = SuperGlue.*
+*Table 4: Combined models evaluation on test data (laboratory environment). True positive here is when two points are close to each other (within 3 meters) and oriented in the same direction (within 45 degrees). Note: S.P. = SuperPoint, S.G. = SuperGlue.*
 
 ## Execution time performance
 
 | Method                | Processing unit(s) | Total Duration (s) |
 |-----------------------|--------------------|--------------------|
-| DBoW2                 | CPU                | 2.65               |
-| SuperPoint + SuperGlue| CPU + GPU          | 357.96             |
-| Scan Context          | CPU                | 0.35               |
-| LoGG3D-Net            | CPU + GPU          | 10.00              |
+| DBoW2                 | CPU                | 2.82               |
+| SuperPoint + SuperGlue| CPU + GPU          | 359.36             |
+| Scan Context          | CPU                | 9.46               |
+| LoGG3D-Net            | CPU + GPU          | 9.76               |
+| MixVPR                | CPU + GPU          | 1.79               |
+| STD                   | CPU                | 30.30              |
 
-*Table 5: Execution time performance of each method on 100 frames (i.e., 100 seconds of data).*  
+*Table 5: Execution time performance of each method on 100 frames (i.e., 100 seconds of data).*

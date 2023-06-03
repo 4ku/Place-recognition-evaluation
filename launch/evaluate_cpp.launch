@@ -1,4 +1,5 @@
 <launch>
+	<rosparam command="load" file="$(find place_recog_eval)/config/std_livox.yaml" />
   <include file="$(find place_recog_eval)/launch/base.launch" />
 
   <node pkg="place_recog_eval" type="evaluate" name="evaluate" output="screen" cwd="node"/>

@@ -36,7 +36,7 @@ class SuperGlue(BaseMethod):
         self.N_COLS = 640
 
     def __str__(self) -> str:
-        return self.__class__.__name__ + f'_threshold({self.THRESHOLD})'
+        return self.__class__.__name__ + f' (threshold {self.THRESHOLD})'
     
     def predict_loop_candidates(self, cloud_vec, odom_vec, img_vec, min_idx_diff=1) -> np.ndarray:
         size = len(img_vec)

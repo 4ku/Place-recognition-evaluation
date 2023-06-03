@@ -302,7 +302,7 @@ class MixVPR(BaseMethod):
 
 
     def __str__(self) -> str:
-        return self.__class__.__name__ + f'_threshold({self.threshold})'
+        return self.__class__.__name__ + f' (threshold {self.threshold})'
 
     def predict_loop_candidates(self,cloud_vec, odom_vec, img_vec, min_idx_diff=1) -> np.ndarray:
         size = len(img_vec)

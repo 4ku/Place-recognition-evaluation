@@ -46,7 +46,7 @@ void getMethods(std::vector<BaseMethod *> &methods, ros::NodeHandle &nh)
         // methods.push_back(method2);
 
         // Find best threshold for Scan Context
-        for (double threshold = 0.01; threshold < 0.1; threshold += 0.01)
+        for (double threshold = 0.025; threshold < 0.1; threshold += 0.01)
         {
             BaseMethod *method = new ScanContext(threshold, 0.2);
             methods.push_back(method);
@@ -58,6 +58,16 @@ void getMethods(std::vector<BaseMethod *> &methods, ros::NodeHandle &nh)
         //     BaseMethod *method = new DBoW(threshold);
         //     methods.push_back(method);
         // }
+
+        // Find best threshold for STD
+        // for (double threshold = 0.0; threshold <= 0.7; threshold += 0.1)
+        // {
+        //     ConfigSetting config_setting;
+        //     read_parameters(nh, config_setting);
+        //     config_setting.icp_threshold_ = threshold;
+        //     methods.push_back(new STD(config_setting));
+        // }
+
     }
 }
 

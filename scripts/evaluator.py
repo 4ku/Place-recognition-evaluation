@@ -11,6 +11,8 @@ from typing import Optional, Tuple, List
 import time
 import os
 from pathlib import Path
+import subprocess
+import re
 
 
 def angular_difference(quat_1, quat_2):
@@ -113,7 +115,7 @@ class Evaluator(abc.ABC):
         if self.counter == self.RECORD_SIZE:
 
             self.get_real_loop_candidates()
-            self.get_model_loop_candidates()
+            self.evaluate_models()
 
             # Plot odometry path
             self.plot_path()
@@ -127,13 +129,13 @@ class Evaluator(abc.ABC):
                 path = os.path.join(path, "with_angle")
             else:
                 path = os.path.join(path, "no_angle")
-            
+
             # Check if the directory exists and create it if it doesn't
             if not os.path.exists(path):
                 os.makedirs(path)
-            
+
             path = os.path.join(path, filename)
-            
+
             with open(path, 'w') as f:
                 for i in range(1, self.RECORD_SIZE):
                     for j in range(i - self.MIN_IDX_DIFF + 1):
@@ -162,9 +164,10 @@ class Evaluator(abc.ABC):
                     self.real_loop_candidates[i][j] = True
 
         method_name = str(self.methods[0]).split("_")[0]
-        self.save_candidates(self.real_loop_candidates, f"real_{method_name}.txt")
+        self.save_candidates(self.real_loop_candidates,
+                             f"real_{method_name}.txt")
 
-    def get_model_loop_candidates(self) -> None:
+    def evaluate_models(self) -> None:
         """
         Calculate predicted loop candidates using the provided loop closure detection methods.
 
@@ -173,7 +176,11 @@ class Evaluator(abc.ABC):
 
         best_f1_score = 0
         best_method = None
-        
+
+        # Initialize precision and recall lists
+        precisions = []
+        recalls = []
+
         for method in self.methods:
             start = time.time()
             predicted_loop_candidates = method.predict_loop_candidates(
@@ -185,8 +192,12 @@ class Evaluator(abc.ABC):
             rospy.loginfo(
                 f"It took {duration / len(self.cloud_vec) :.5f} seconds per frame.")
 
+            precision, recall, f1_score, accuracy = self.calculate_metrics(
+                predicted_loop_candidates)
 
-            precision, recall, f1_score, accuracy = self.calculate_metrics(predicted_loop_candidates)
+            # Save precision and recall
+            precisions.append(precision)
+            recalls.append(recall)
 
             rospy.loginfo("----------------------------------------------")
             rospy.loginfo(f"Precision: {precision:.3f}")
@@ -202,8 +213,37 @@ class Evaluator(abc.ABC):
                 best_method = method
 
             self.save_candidates(predicted_loop_candidates, f"{method}.txt")
-        
-        rospy.loginfo(f"Best method with f1_score {best_f1_score:.3f}: {best_method}")
+
+        rospy.loginfo(
+            f"Best method with f1_score {best_f1_score:.3f}: {best_method}")
+
+        # Generate Precision-Recall curve if more than one method is provided
+        if len(self.methods) > 1:
+            # Remove parentheses content from the method name
+            method_name = re.sub(r'\(.*\)', '', str(best_method))
+            self.generate_pr_curve(precisions, recalls, method_name.strip())
+
+    def generate_pr_curve(self, precisions, recalls, method_name):
+        # Convert the lists to strings
+        precisions_str = ','.join(map(str, precisions))
+        recalls_str = ','.join(map(str, recalls))
+
+        # Get the path to the Python script
+        script_path = Path(os.path.dirname(__file__)).parent / \
+            "scripts" / "plot_pr_curve.py"
+
+        # Get the results path
+        results_path = Path(os.path.dirname(__file__)).parent / "results"
+        if self.ANGLE_CONSIDERATION:
+            results_path = os.path.join(results_path, "with_angle")
+        else:
+            results_path = os.path.join(results_path, "no_angle")
+
+        # Build the command to run the Python script
+        command = f"python3 {script_path} {method_name} {results_path} {precisions_str} {recalls_str}"
+
+        # Execute the command
+        subprocess.run(command, shell=True)
 
     def calculate_metrics(self, predicted_loop_candidates: List[List[bool]]) -> Tuple[float, float, float, float]:
         """

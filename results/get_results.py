@@ -99,5 +99,7 @@ if __name__ == "__main__":
     subdirectories = [os.path.join(path, d) for d in os.listdir(
         path) if os.path.isdir(os.path.join(path, d))]
 
+    # subdirectories = ['./no_angle', './with_angle']
+
     for directory in subdirectories:
         calculate_metrics_for_directory(directory)

@@ -35,6 +35,8 @@ public:
 
     void plot_odometry_path(const std::vector<geometry_msgs::Pose>& odom_vec);
 
+    void generate_pr_curve(const std::vector<double>& precisions, const std::vector<double>& recalls, const std::string& method_name);
+
 private:
     // Number of triplets to record
     const int RECORD_SIZE;

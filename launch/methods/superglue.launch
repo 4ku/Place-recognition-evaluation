@@ -2,7 +2,7 @@
     <include file="$(find place_recog_eval)/launch/base.launch" />
 
 	<param name="method" value="superglue"/>
-	<param name="threshold" value="145" type="double"/>
+	<param name="threshold" value="240" type="double"/>
 
 	<node pkg="place_recog_eval" type="evaluate.py" name="evaluate_node" output="screen" cwd="node"/>
 </launch>

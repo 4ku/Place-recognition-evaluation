@@ -12,6 +12,10 @@
 #include <iostream>
 #include <boost/filesystem.hpp>
 
+#include <sstream>
+#include <iterator>
+#include <cstdlib>
+
 /**
  * \brief Calculate the angular difference between two quaternions
  *
@@ -74,9 +78,9 @@ void Evaluator::synced_callback(const sensor_msgs::PointCloud2::ConstPtr &cloud_
     counter++;
 
     if (counter == RECORD_SIZE)
-    {   
+    {
         ROS_INFO("Starting evaluation...");
-        
+
         get_real_loop_candidates();
         evaluate_models();
 
@@ -100,20 +104,25 @@ static std::string getFirstWord(const std::string &input)
     return input.substr(0, firstSpace);
 }
 
-void Evaluator::save_candidates(std::vector<std::vector<bool>> &candidates, const std::string &filename){
+void Evaluator::save_candidates(std::vector<std::vector<bool>> &candidates, const std::string &filename)
+{
     if (SAVE_CANDIDATES)
     {
         std::ofstream file;
         std::string path = ros::package::getPath("place_recog_eval") + "/results/";
 
-        if (ANGLE_CONSIDERATION) {
+        if (ANGLE_CONSIDERATION)
+        {
             path += "with_angle/";
-        } else {
+        }
+        else
+        {
             path += "no_angle/";
         }
 
         // Check if the directory exists and create it if it doesn't
-        if (!boost::filesystem::exists(path)) {
+        if (!boost::filesystem::exists(path))
+        {
             boost::filesystem::create_directories(path);
         }
         path += filename;
@@ -130,7 +139,6 @@ void Evaluator::save_candidates(std::vector<std::vector<bool>> &candidates, cons
         }
     }
 }
-
 
 void Evaluator::get_real_loop_candidates()
 {
@@ -158,10 +166,27 @@ void Evaluator::get_real_loop_candidates()
     save_candidates(real_loop_candidates, "real_" + method_name + ".txt");
 }
 
+std::string remove_parentheses_text(const std::string &str)
+{
+    std::size_t pos = str.find(" (");
+    if (pos != std::string::npos)
+    {
+        return str.substr(0, pos);
+    }
+    else
+    {
+        return str;
+    }
+}
+
 void Evaluator::evaluate_models()
-{   
+{
     double best_f1_score = 0;
     BaseMethod *best_method = nullptr;
+
+    // Declare vectors to store the precision and recall values
+    std::vector<double> precisions;
+    std::vector<double> recalls;
 
     for (BaseMethod *method : methods)
     {
@@ -182,6 +207,10 @@ void Evaluator::evaluate_models()
         // Calculate metrics
         double precision, recall, f1_score, accuracy;
         calculate_metrics(predicted_loop_candidates, precision, recall, f1_score, accuracy);
+
+        // Save precision and recall
+        precisions.push_back(precision);
+        recalls.push_back(recall);
 
         // Display results
         ROS_INFO("----------------------------------------------");
@@ -204,6 +233,35 @@ void Evaluator::evaluate_models()
     }
 
     ROS_INFO("Best method: %s with f1 score: %.3f", best_method->getName().c_str(), best_f1_score);
+
+    if (methods.size() > 1)
+    {
+        // Generate Precision-Recall Curve
+        generate_pr_curve(precisions, recalls, remove_parentheses_text(best_method->getName()));
+    }
+}
+
+void Evaluator::generate_pr_curve(const std::vector<double> &precisions, const std::vector<double> &recalls, const std::string &method_name)
+{
+    // Convert the vectors to strings
+    std::ostringstream precisions_stream, recalls_stream;
+    std::copy(precisions.begin(), precisions.end(), std::ostream_iterator<double>(precisions_stream, ","));
+    std::copy(recalls.begin(), recalls.end(), std::ostream_iterator<double>(recalls_stream, ","));
+
+    // Get the path to the Python script
+    std::string script_path = ros::package::getPath("place_recog_eval") + "/scripts/plot_pr_curve.py";
+    std::string results_path = ros::package::getPath("place_recog_eval") + "/results/";
+    if (ANGLE_CONSIDERATION)
+        results_path += "with_angle";
+    else
+        results_path += "no_angle";
+
+    // Build the command to run the Python script
+    std::string command = "python " + script_path + " " + method_name + " " + results_path +
+                          " " + precisions_stream.str() + " " + recalls_stream.str();
+
+    // Execute the command
+    system(command.c_str());
 }
 
 void Evaluator::calculate_metrics(std::vector<std::vector<bool>> &predicted_loop_candidates, double &precision, double &recall, double &f1_score, double &accuracy)

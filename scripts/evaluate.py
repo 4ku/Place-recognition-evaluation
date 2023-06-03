@@ -37,18 +37,31 @@ def getMethods() -> List[BaseMethod]:
                 "Invalid method parameter. Use 'logg3d' or 'superglue'.")
             exit(-1)
     else:
+        # from scripts.methods.LoGG3D import LoGG3D
+        # methods.append(LoGG3D(0.08))
 
-        methods.append(LoGG3D(0.08))
-        # methods.append(SuperGlue(145))
+        # from scripts.methods.SuperGlue import SuperGlue
+        # methods.append(SuperGlue(240))
+
+        # from scripts.methods.MixVPR_ import MixVPR
+        # methods.append(MixVPR(0.13))
 
         # Example for finding best threshold for LoGG3D
-        # for threshold in range(7, 17):
-        #     threshold = threshold / 100.0  # Convert to float equivalent
-        #     methods.append(LoGG3D(threshold))
+        from scripts.methods.LoGG3D import LoGG3D
+        for threshold in range(5, 17):
+            threshold = threshold / 100.0  # Convert to float equivalent
+            methods.append(LoGG3D(threshold))
 
         # Example for finding best threshold for SuperGlue
-        # for threshold in range(110, 160, 5):
+        # from scripts.methods.SuperGlue import SuperGlue
+        # for threshold in range(150, 301, 30):
         #     methods.append(SuperGlue(threshold))
+
+        # Example for finding best threshold for MixVPR
+        # from scripts.methods.MixVPR_ import MixVPR
+        # for threshold in range(9, 21):
+        #     threshold = threshold / 100.0  # Convert to float equivalent
+        #     methods.append(MixVPR(threshold))
 
     return methods
 

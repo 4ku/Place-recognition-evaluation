@@ -2,7 +2,7 @@
     <include file="$(find place_recog_eval)/launch/base.launch" />
 
 	<param name="method" value="mix_vpr"/>
-	<param name="threshold" value="0.12" type="double"/>
+	<param name="threshold" value="0.13" type="double"/>
 
 	<node pkg="place_recog_eval" type="evaluate.py" name="evaluate_node" output="screen" cwd="node"/>
 </launch>

@@ -7,7 +7,7 @@ STD::STD(ConfigSetting &config_setting) : config_setting(config_setting)
 
 const std::string STD::getName() const
 {
-    const std::string name = "STD";
+    const std::string name = "STD (threshold " + std::to_string(config_setting.icp_threshold_) + ")";
     return name;
 }
 
