@@ -22,6 +22,7 @@
    - [Combined models evaluation (distance-based)](#combined-models-evaluation-distance-based)
    - [Combined models evaluation (distance and angle-based)](#combined-models-evaluation-distance-and-angle-based)
    - [Execution time performance](#execution-time-performance)
+7. [Citation](#citation)
 
 
 # Introduction 
@@ -388,3 +389,18 @@ The resulting vocabulary will be saved in the `include/methods/dbow/` directory.
 | STD                   | CPU                | 30.30              |
 
 *Table 5: Execution time performance of each method on 100 frames (i.e., 100 seconds of data).*
+
+# Citation
+
+If you use this code for your research, please cite our paper:
+
+```bibtex
+@inproceedings{efremov2023comparative,
+  title={A Comparative Analysis of Visual and Point Cloud-Based Place Recognition Methods in Indoor Environment},
+  author={Efremov, Ivan and Khafizov, Ramil and Khusainov, Ramil},
+  booktitle={2023 21st International Conference on Advanced Robotics (ICAR)},
+  pages={128--133},
+  year={2023},
+  organization={IEEE}
+}
+```
